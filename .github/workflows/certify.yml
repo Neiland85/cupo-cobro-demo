@@ -2,19 +2,24 @@ name: certify
 
 on:
   push:
-    branches: [main]
+    branches: [main, demo/ledger-recon]
   pull_request:
 
 jobs:
   kernel:
     name: C1–C7 kernel
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: ["8.2", "8.3"]
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2"
+          php-version: ${{ matrix.php }}
           coverage: none
+          tools: composer
       - name: Install and test clarity/nucleo
         working-directory: packages/clarity-nucleo
         run: |
@@ -22,17 +27,34 @@ jobs:
           composer test
 
   product:
-    name: P1–P3 require
+    name: P1–P3 + demo ledger
     runs-on: ubuntu-latest
     needs: kernel
+    strategy:
+      fail-fast: true
+      matrix:
+        php: ["8.2", "8.3"]
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2"
+          php-version: ${{ matrix.php }}
           coverage: none
-          extensions: ctype, iconv
-      - name: Require path package
-        run: composer update clarity/nucleo --no-interaction --prefer-dist --no-scripts
+          extensions: ctype, iconv, mbstring, xml, tokenizer
+          tools: composer
+      - name: Install product deps
+        run: composer install --no-interaction --prefer-dist --no-scripts --no-progress
       - name: Product nucleo tests
         run: php bin/phpunit tests/Nucleo
+      - name: Demo ledger runner
+        run: php scripts/demo_ledger.php
+      - name: No kernel context absorbed
+        run: |
+          if grep -R --include='*.php' -F 'namespace Clarity\Nucleo\Context' src >/dev/null 2>&1; then
+            echo "NO-GO: src/ absorbe Clarity\\Nucleo\\Context"
+            exit 1
+          fi
+          if test -f src/routes/amenazas.tsx || test -f src/lib/threats.ts; then
+            echo "NO-GO: este árbol es el briefing"
+            exit 1
+          fi
