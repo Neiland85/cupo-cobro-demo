@@ -1,0 +1,8 @@
+# Punto de extensión explícito. El producto requiere el kernel; no lo reimplementa.
+services:
+    Clarity\Nucleo\Capability\Gate:
+        public: true
+    Clarity\Nucleo\Content\Boundary:
+        public: true
+    Clarity\Nucleo\HoldPipe\Pipe:
+        public: true
