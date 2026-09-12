@@ -1,0 +1,26 @@
+{
+  "name": "clarity/nucleo",
+  "description": "NÚCLEO: agentes operadores de capacidades, no propietarios de autoridad. Kernel PHP de la tesis de fronteras.",
+  "type": "library",
+  "license": "proprietary",
+  "version": "0.2.0",
+  "require": {
+    "php": ">=8.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Clarity\\Nucleo\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Clarity\\Nucleo\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit --colors=always"
+  }
+}
