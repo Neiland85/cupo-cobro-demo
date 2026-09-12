@@ -1,7 +1,9 @@
-# https://symfony.com/doc/current/service_container.html
 parameters:
     app.timezone: UTC
     app.locale: es
+    env(DATABASE_URL): 'sqlite:///%kernel.project_dir%/var/data.db'
+    env(MAILER_DSN): 'null://null'
+    env(APP_SECRET): 'test-only-not-a-production-secret'
 
 services:
     _defaults:
