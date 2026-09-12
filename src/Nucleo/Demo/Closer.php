@@ -35,6 +35,7 @@ final class Closer
     {
         $allowed = match ($b->code) {
             Codes::PSP_OK_LEDGER_UNKNOWN => [Codes::APPLY_LATE_MATCHED, Codes::PSP_CONFIRMED_SIGNED],
+            Codes::LATE_PSP_NO_CUPO => [Codes::REFUND_OVERSELL],
             Codes::PSP_CAPTURED_CUPO_FREE => [Codes::REFUND_OVERSELL],
             Codes::CUPO_HELD_PSP_REJECT => [Codes::CART_RELEASE],
             Codes::DUPLICATE_CAPTURE_SAME_KEY => [Codes::VOID_DUPLICATE],
@@ -50,6 +51,10 @@ final class Closer
             return 'ILLEGAL_REASON';
         }
         $slot = $this->world->ledger->slot($b->key) ?? '';
+        $held = $slot !== '' && $this->world->slots->isHeld($slot, $b->key, $this->world->now);
+        if (in_array($reason, [Codes::PSP_CONFIRMED_SIGNED, Codes::APPLY_LATE_MATCHED], true) && !$held) {
+            return 'NO_CUPO';
+        }
         switch ($reason) {
             case Codes::PSP_CONFIRMED_SIGNED:
             case Codes::APPLY_LATE_MATCHED:
@@ -57,10 +62,16 @@ final class Closer
                 $this->world->fiscal->enqueue($b->key, 'inv-'.$b->key);
                 break;
             case Codes::CART_RELEASE:
-            case Codes::REFUND_OVERSELL:
                 if ($slot !== '') {
                     $this->world->slots->release($slot, $b->key);
                 }
+                break;
+            case Codes::REFUND_OVERSELL:
+                if ($slot !== '' && $held) {
+                    $this->world->slots->release($slot, $b->key);
+                }
+                $this->world->ledger->markRefunded($b->key);
+                $this->world->fiscal->void($b->key);
                 break;
             case Codes::PAYOUT_WITHHELD:
                 $this->world->payouts->withhold($b->key);
