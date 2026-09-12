@@ -19,16 +19,13 @@ final class Checkout
         if ($hold !== Codes::HOLD_OK && $hold !== Codes::HOLD_REPLAY) {
             return ['code' => $hold, 'blocked' => true, 'status' => null];
         }
-
         $this->world->ledger->openUnknown($key, $slotId, $amount);
         $psp = $this->world->psp->authorize($key);
-
         if ($psp === 'reject') {
             $this->world->ledger->reject($key);
             $this->world->slots->release($slotId, $key);
             return ['code' => Codes::PAY_REJECT, 'blocked' => false, 'status' => Codes::PAY_REJECT];
         }
-
         if ($psp === 'ok') {
             $cap = $this->world->ledger->capture($key);
             if ($cap === Codes::DUPLICATE_CAPTURE_SAME_KEY) {
@@ -38,7 +35,6 @@ final class Checkout
             $this->world->fiscal->enqueue($key, 'inv-'.$key);
             return ['code' => Codes::PAY_OK, 'blocked' => false, 'status' => 'captured'];
         }
-
         return ['code' => Codes::PAY_TIMEOUT, 'blocked' => false, 'status' => Codes::PAY_UNKNOWN];
     }
 
@@ -48,10 +44,22 @@ final class Checkout
         if (!$origin->mayInstruct()) {
             return ['code' => Codes::ORIGIN_BLOCKED, 'blocked' => true];
         }
+        if ($this->world->ledger->isRefunded($key)) {
+            return ['code' => Codes::REFUND_REPLAY, 'blocked' => false];
+        }
+        if ($this->world->ledger->status($key) === Codes::PAY_UNKNOWN) {
+            return ['code' => Codes::REFUND_UNKNOWN_BLOCKED, 'blocked' => true];
+        }
+        if ($this->world->payouts->contains($key)) {
+            $this->world->ledger->markDispute($key);
+            return ['code' => Codes::REFUND_NEEDS_PAYOUT_HOLD, 'blocked' => true];
+        }
         $slot = $this->world->ledger->slot($key);
         if ($slot !== null) {
             $this->world->slots->release($slot, $key);
         }
-        return ['code' => 'REFUND_OK', 'blocked' => false];
+        $this->world->ledger->markRefunded($key);
+        $this->world->fiscal->void($key);
+        return ['code' => Codes::REFUND_OK, 'blocked' => false];
     }
 }
