@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Fail-closed antes de empujar. El detector no firma; los tests sí paran el push.
+set -euo pipefail
+root="$(git rev-parse --show-toplevel)"
+cd "$root"
+
+command -v php >/dev/null || { echo "NO-GO: php no está en PATH" >&2; exit 1; }
+
+if [[ ! -f vendor/autoload.php ]]; then
+  echo "NO-GO: falta vendor/. Corre composer install --no-scripts" >&2
+  exit 1
+fi
+
+echo "== phpunit tests/Nucleo =="
+php bin/phpunit tests/Nucleo
+
+echo "== demo ledger =="
+php scripts/demo_ledger.php

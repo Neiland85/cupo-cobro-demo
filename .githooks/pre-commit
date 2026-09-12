@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# No deja pasar secretos ni PHP roto. No corre la suite (eso es pre-push).
+set -euo pipefail
+root="$(git rev-parse --show-toplevel)"
+cd "$root"
+
+blocked='^(\.env$|\.env\.local$|\.DS_Store$|\.phpunit\.cache/)'
+if git diff --cached --name-only | grep -E "$blocked" >/dev/null; then
+  echo "NO-GO: no se commitea .env, .DS_Store ni .phpunit.cache" >&2
+  git diff --cached --name-only | grep -E "$blocked" >&2
+  exit 1
+fi
+
+fail=0
+while IFS= read -r f; do
+  case "$f" in
+    *.php)
+      if ! php -l "$f" >/dev/null; then
+        echo "NO-GO: php -l $f" >&2
+        fail=1
+      fi
+      ;;
+  esac
+done < <(git diff --cached --name-only --diff-filter=ACMR)
+
+exit "$fail"
