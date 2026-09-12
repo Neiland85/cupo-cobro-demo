@@ -1,0 +1,12 @@
+{
+  "name": "alquiler-equipos-sonido",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "test:nucleo": "php bin/phpunit tests/Nucleo",
+    "test:demo": "php scripts/demo_ledger.php"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}
