@@ -19,3 +19,8 @@ composer.phar
 # Ignore cache directories
 var/cache/
 
+# Certification evidence pack — local custody, not the repo
+/var/evidence/
+/var/log/
+.phpunit.cache
+.phpunit.result.cache
