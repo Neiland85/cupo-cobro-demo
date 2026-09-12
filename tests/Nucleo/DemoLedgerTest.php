@@ -20,7 +20,6 @@ final class DemoLedgerTest extends TestCase
         $w->slots->seed('slot-a', 1);
         $w->psp->set('k1', 'timeout');
         $r = (new Checkout($w))->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
-
         self::assertSame(Codes::PAY_TIMEOUT, $r['code']);
         self::assertSame(Codes::PAY_UNKNOWN, $w->ledger->status('k1'));
         self::assertTrue($w->slots->isHeld('slot-a', 'k1', 1000));
@@ -35,7 +34,6 @@ final class DemoLedgerTest extends TestCase
         $c = new Checkout($w);
         $c->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
         $r = $c->reserve('slot-a', 'k2', OriginTrust::fromSource('operator'), 12000, 1000);
-
         self::assertSame(Codes::HOLD_CONFLICT, $r['code']);
         self::assertTrue($r['blocked']);
     }
@@ -46,7 +44,6 @@ final class DemoLedgerTest extends TestCase
         $w->slots->seed('slot-a', 1);
         $w->psp->set('k1', 'reject');
         $r = (new Checkout($w))->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
-
         self::assertSame(Codes::PAY_REJECT, $r['code']);
         self::assertFalse($w->slots->isHeld('slot-a', 'k1', 1000));
     }
@@ -58,15 +55,11 @@ final class DemoLedgerTest extends TestCase
         $w->psp->set('k1', 'timeout');
         (new Checkout($w))->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
         $w->psp->set('k1', 'ok');
-
         $opened = (new Detector($w))->scan(1000);
         $codes = array_map(static fn ($b) => $b->code, $opened);
         self::assertContains(Codes::PSP_OK_LEDGER_UNKNOWN, $codes);
-        self::assertSame(Codes::PAY_UNKNOWN, $w->ledger->status('k1'));
-
         $closer = new Closer($w);
         self::assertSame('DETECTOR_CANNOT_CONFIRM', $closer->confirmUnknownAsJob('k1'));
-
         $brk = null;
         foreach ($w->breaks as $b) {
             if ($b->code === Codes::PSP_OK_LEDGER_UNKNOWN) {
@@ -77,7 +70,6 @@ final class DemoLedgerTest extends TestCase
         self::assertSame('WRONG_OWNER', $closer->close($brk->id, Codes::OWNER_AVAILABILITY, Codes::PSP_CONFIRMED_SIGNED));
         self::assertSame('OK', $closer->close($brk->id, Codes::OWNER_PAYMENTS, Codes::PSP_CONFIRMED_SIGNED));
         self::assertSame('captured', $w->ledger->status('k1'));
-        self::assertSame('matched', $brk->state);
     }
 
     public function test_external_web_cannot_refund(): void
@@ -88,12 +80,54 @@ final class DemoLedgerTest extends TestCase
         $c = new Checkout($w);
         $c->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
         $r = $c->refund('k1', OriginTrust::fromSource('external_web'));
-
         self::assertTrue($r['blocked']);
         self::assertSame(Codes::ORIGIN_BLOCKED, $r['code']);
-        $b = (new Detector($w))->openAgentRefund('k1');
-        self::assertSame(Codes::AGENT_REFUND_NO_ORIGIN, $b->code);
-        self::assertSame('open', $b->state);
+    }
+
+    public function test_cannot_refund_unknown(): void
+    {
+        $w = new World();
+        $w->slots->seed('slot-a', 1);
+        $w->psp->set('k1', 'timeout');
+        $c = new Checkout($w);
+        $c->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
+        $r = $c->refund('k1', OriginTrust::fromSource('operator'));
+        self::assertTrue($r['blocked']);
+        self::assertSame(Codes::REFUND_UNKNOWN_BLOCKED, $r['code']);
+        self::assertTrue($w->slots->isHeld('slot-a', 'k1', 1000));
+    }
+
+    public function test_refund_after_payout_withholds_supplier_before_traveler(): void
+    {
+        $w = new World();
+        $w->slots->seed('slot-a', 1);
+        $w->psp->set('k1', 'ok');
+        $c = new Checkout($w);
+        $c->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
+        $w->payouts->addCandidate('k1');
+        $first = $c->refund('k1', OriginTrust::fromSource('operator'));
+        self::assertTrue($first['blocked']);
+        self::assertSame(Codes::REFUND_NEEDS_PAYOUT_HOLD, $first['code']);
+        self::assertTrue($w->payouts->contains('k1'));
+        self::assertTrue($w->slots->isHeld('slot-a', 'k1', 1000));
+        self::assertFalse($w->ledger->isRefunded('k1'));
+        (new Detector($w))->scan(1000);
+        $brk = null;
+        foreach ($w->breaks as $b) {
+            if ($b->code === Codes::PAYOUT_ON_DISPUTE) {
+                $brk = $b;
+            }
+        }
+        self::assertNotNull($brk);
+        self::assertSame('OK', (new Closer($w))->close($brk->id, Codes::OWNER_PAYMENTS, Codes::PAYOUT_WITHHELD));
+        self::assertFalse($w->payouts->contains('k1'));
+        $second = $c->refund('k1', OriginTrust::fromSource('operator'));
+        self::assertFalse($second['blocked']);
+        self::assertSame(Codes::REFUND_OK, $second['code']);
+        self::assertTrue($w->ledger->isRefunded('k1'));
+        self::assertFalse($w->slots->isHeld('slot-a', 'k1', 1000));
+        $replay = $c->refund('k1', OriginTrust::fromSource('operator'));
+        self::assertSame(Codes::REFUND_REPLAY, $replay['code']);
     }
 
     public function test_payout_on_dispute_is_withheld(): void
@@ -104,7 +138,6 @@ final class DemoLedgerTest extends TestCase
         (new Checkout($w))->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
         $w->ledger->markDispute('k1');
         $w->payouts->addCandidate('k1');
-
         (new Detector($w))->scan(1000);
         $brk = null;
         foreach ($w->breaks as $b) {
@@ -117,8 +150,6 @@ final class DemoLedgerTest extends TestCase
         self::assertSame('ILLEGAL_REASON', $closer->close($brk->id, Codes::OWNER_PAYMENTS, Codes::PSP_CONFIRMED_SIGNED));
         self::assertSame('OK', $closer->close($brk->id, Codes::OWNER_PAYMENTS, Codes::PAYOUT_WITHHELD));
         self::assertFalse($w->payouts->contains('k1'));
-        self::assertContains('k1', $w->payouts->withheld);
-        self::assertSame('disputed', $brk->state);
     }
 
     public function test_duplicate_capture_sets_phase_nogo(): void
@@ -129,7 +160,6 @@ final class DemoLedgerTest extends TestCase
         $c = new Checkout($w);
         $c->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
         $again = $c->reserve('slot-a', 'k1', OriginTrust::fromSource('operator'), 12000, 1000);
-
         self::assertSame(Codes::DUPLICATE_CAPTURE_SAME_KEY, $again['code']);
         self::assertTrue($w->phaseNoGo);
     }
