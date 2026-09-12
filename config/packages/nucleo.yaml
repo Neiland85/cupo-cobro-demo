@@ -6,3 +6,14 @@ services:
         public: true
     Clarity\Nucleo\HoldPipe\Pipe:
         public: true
+
+    Clarity\Nucleo\HoldPipe\PaymentPort:
+        alias: App\Nucleo\PaymentAdapter
+
+    App\Nucleo\PaymentAdapter:
+        arguments:
+            $mode: timeout
+        public: true
+
+    App\Nucleo\HoldRunner:
+        public: true
