@@ -1,25 +1,4 @@
-# Configuration for asset management with Symfony Asset Mapper
-
 framework:
     asset_mapper:
-        # Define the directories to be mapped for asset management.
         paths:
             - assets/
-            - public/assets/  # Adding public directory for static resources like images, CSS, JS
-
-        # Use versioning for cache busting to ensure updated assets are loaded.
-        version: 'v1.0'  # Update this version when assets change to force browser cache refresh
-
-        # Define custom asset patterns for better organization and mapping.
-        patterns:
-            css: 'styles/**/*.css'  # Match all CSS files under the styles directory
-            js: 'scripts/**/*.js'   # Match all JS files under the scripts directory
-
-        # Optionally, specify a base URL for assets if they are hosted on a CDN or external host.
-        # Uncomment and set the URL if using a CDN for assets.
-        # base_urls: 'https://cdn.example.com'
-
-        # Optionally, configure the default options for all assets.
-        # default_options:
-        #     integrity: true  # Enable integrity checks for assets, if necessary
-        #     crossorigin: 'anonymous'  # Set cross-origin attributes if assets are served from a different domain
