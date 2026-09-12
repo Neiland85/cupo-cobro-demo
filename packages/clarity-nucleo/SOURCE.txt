@@ -1,0 +1,3 @@
+canonical: Neiland85/nucleo-php-roots
+commit: a90d309f3c4ff44fda1dfa77beac815a2292d2cd
+synced_at: 2026-09-12T03:58:36Z

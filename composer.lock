@@ -4,8 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3aa6efbb754ccfee8f386f7b0ee73bb4",
+    "content-hash": "834daa1f4af02ed8a327860c2beb9381",
     "packages": [
+        {
+            "name": "clarity/nucleo",
+            "version": "0.2.0",
+            "dist": {
+                "type": "path",
+                "url": "packages/clarity-nucleo",
+                "reference": "a64c301694128b9024e47588724ac9678067b816"
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clarity\\Nucleo\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Clarity\\Nucleo\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit --colors=always"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "NÚCLEO: agentes operadores de capacidades, no propietarios de autoridad. Kernel PHP de la tesis de fronteras.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
         {
             "name": "composer/semver",
             "version": "3.4.0",
@@ -9868,5 +9907,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
