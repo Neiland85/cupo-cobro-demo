@@ -1,27 +1,13 @@
-# Symfony Web Profiler configuration
-# For more details, see: https://symfony.com/doc/current/profiler.html
-
 when@dev:
     web_profiler:
-        toolbar: true  # Enable the web profiler toolbar in development
-        intercept_redirects: false  # Do not intercept redirects, keep them as is
-        # Allows normal redirect behavior while still showing the profiler toolbar
-
+        toolbar: true
+        intercept_redirects: false
     framework:
-        profiler:
-            only_exceptions: false  # Collect profiler data for all requests, not just exceptions
-            collect_serializer_data: true  # Collect data related to the serializer component
-            collect_request_data: true  # Collect detailed request data for profiling
-            collect_cache_data: true  # Collect cache usage data
-            # Ensures comprehensive profiling by collecting data from various components
+        profiler: { only_exceptions: false }
 
 when@test:
     web_profiler:
-        toolbar: false  # Disable the web profiler toolbar in test environment
-        intercept_redirects: false  # Do not intercept redirects in test environment
-        # Keeps the redirects normal for tests to simulate real user behavior
-
+        toolbar: false
+        intercept_redirects: false
     framework:
-        profiler:
-            collect: false  # Do not collect profiler data in the test environment to speed up tests
-            # Disabling profiling data collection to optimize test performance
+        profiler: { collect: false }
