@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nucleo\Demo;
 
-/** Mundo in-memory del ejercicio. Tres libros + PSP + breaks. */
 final class World
 {
     public SlotStore $slots;
@@ -15,6 +14,7 @@ final class World
     /** @var array<string, BreakRecord> */
     public array $breaks = [];
     public bool $phaseNoGo = false;
+    public int $now = 1000;
 
     public function __construct()
     {

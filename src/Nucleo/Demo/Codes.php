@@ -17,6 +17,7 @@ final class Codes
     public const SLOT_FULL = 'SLOT_FULL';
     public const ORIGIN_BLOCKED = 'ORIGIN_BLOCKED';
     public const PSP_OK_LEDGER_UNKNOWN = 'PSP_OK_LEDGER_UNKNOWN';
+    public const LATE_PSP_NO_CUPO = 'LATE_PSP_NO_CUPO';
     public const LEDGER_CAPTURED_PSP_MISSING = 'LEDGER_CAPTURED_PSP_MISSING';
     public const PSP_CAPTURED_CUPO_FREE = 'PSP_CAPTURED_CUPO_FREE';
     public const CUPO_HELD_PSP_REJECT = 'CUPO_HELD_PSP_REJECT';
