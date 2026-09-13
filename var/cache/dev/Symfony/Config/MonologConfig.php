@@ -44,7 +44,7 @@ class MonologConfig implements \Symfony\Component\Config\Builder\ConfigBuilderIn
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @example {"type":"stream","path":"\/var\/log\/symfony.log","level":"ERROR","bubble":"false","formatter":"my_formatter"}
      * @example {"type":"fingers_crossed","action_level":"WARNING","buffer_size":30,"handler":"custom"}

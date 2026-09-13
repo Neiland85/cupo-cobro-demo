@@ -227,7 +227,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @default {"enabled":null}
      * @return \Symfony\Config\Monolog\HandlerConfig\ProcessPsr3MessagesConfig|$this
@@ -435,7 +435,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @return \Symfony\Config\Monolog\HandlerConfig\ExcludedHttpCodeConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\ExcludedHttpCodeConfig : static)
@@ -1159,7 +1159,7 @@ class HandlerConfig
 
     /**
      * @default array (
-    )
+     * )
      * @param ParamConfigurator|mixed $value
      *
      * @return $this
@@ -1200,7 +1200,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of string|array
      * @param TValue $value
      * @return \Symfony\Config\Monolog\HandlerConfig\PublisherConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\PublisherConfig : static)
@@ -1225,7 +1225,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of string|array
      * @param TValue $value
      * @return \Symfony\Config\Monolog\HandlerConfig\MongoConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\MongoConfig : static)
@@ -1250,7 +1250,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of string|array
      * @param TValue $value
      * @return \Symfony\Config\Monolog\HandlerConfig\ElasticsearchConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\ElasticsearchConfig : static)
@@ -1314,7 +1314,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of string|array
      * @param TValue $value
      * @return \Symfony\Config\Monolog\HandlerConfig\RedisConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\RedisConfig : static)
@@ -1339,7 +1339,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of string|array
      * @param TValue $value
      * @return \Symfony\Config\Monolog\HandlerConfig\PredisConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\PredisConfig : static)
@@ -1442,7 +1442,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of string|array
      * @param TValue $value
      * @return \Symfony\Config\Monolog\HandlerConfig\EmailPrototypeConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\EmailPrototypeConfig : static)
@@ -1479,22 +1479,9 @@ class HandlerConfig
         return $this;
     }
 
-    /**
-     * @template TValue
-     * @param TValue $value
-     * @return \Symfony\Config\Monolog\HandlerConfig\VerbosityLevelsConfig|$this
-     * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\VerbosityLevelsConfig : static)
-     */
-    public function verbosityLevels(array $value = []): \Symfony\Config\Monolog\HandlerConfig\VerbosityLevelsConfig|static
+    public function verbosityLevels(array $value = []): \Symfony\Config\Monolog\HandlerConfig\VerbosityLevelsConfig
     {
-        if (!\is_array($value)) {
-            $this->_usedProperties['verbosityLevels'] = true;
-            $this->verbosityLevels = $value;
-
-            return $this;
-        }
-
-        if (!$this->verbosityLevels instanceof \Symfony\Config\Monolog\HandlerConfig\VerbosityLevelsConfig) {
+        if (null === $this->verbosityLevels) {
             $this->_usedProperties['verbosityLevels'] = true;
             $this->verbosityLevels = new \Symfony\Config\Monolog\HandlerConfig\VerbosityLevelsConfig($value);
         } elseif (0 < \func_num_args()) {
@@ -1505,7 +1492,7 @@ class HandlerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @return \Symfony\Config\Monolog\HandlerConfig\ChannelsConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Monolog\HandlerConfig\ChannelsConfig : static)

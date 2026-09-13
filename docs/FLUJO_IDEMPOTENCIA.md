@@ -8,7 +8,7 @@ Puerta: `php bin/console nucleo:demo replay`
 
 ## El mismo acto
 
-Tripleta: origen + operación + key.
+Triplet: origen + operación + key.
 
 La operación de cobro es `reserve`. La key es `k1`.
 Si llega otra vez `k1`, no es otro viajero.
@@ -51,11 +51,11 @@ Aquí sí hay replay de manual.
 
 ## Lo que no es replay
 
-| Caso | Keys | Qué es |
-|---|---|---|
-| A timeout, B compra | A ≠ B | conflicto de cupo / oversell |
-| Retry de timeout con otra key | k1 luego k2 | segundo acto; el código no lo impide |
-| Hold de A caducado y A vuelve | misma key, TTL muerto | hold nuevo, no HOLD_REPLAY |
+| Caso                          | Keys                  | Qué es                               |
+| ----------------------------- | --------------------- | ------------------------------------ |
+| A timeout, B compra           | A ≠ B                 | conflicto de cupo / oversell         |
+| Retry de timeout con otra key | k1 luego k2           | segundo acto; el código no lo impide |
+| Hold de A caducado y A vuelve | misma key, TTL muerto | hold nuevo, no HOLD_REPLAY           |
 
 ## Mesa
 

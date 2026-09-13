@@ -127,22 +127,9 @@ class LogoutConfig
         return $this;
     }
 
-    /**
-     * @template TValue
-     * @param TValue $value
-     * @return \Symfony\Config\Security\FirewallConfig\Logout\DeleteCookieConfig|$this
-     * @psalm-return (TValue is array ? \Symfony\Config\Security\FirewallConfig\Logout\DeleteCookieConfig : static)
-     */
-    public function deleteCookie(string $name, array $value = []): \Symfony\Config\Security\FirewallConfig\Logout\DeleteCookieConfig|static
+    public function deleteCookie(string $name, array $value = []): \Symfony\Config\Security\FirewallConfig\Logout\DeleteCookieConfig
     {
-        if (!\is_array($value)) {
-            $this->_usedProperties['deleteCookies'] = true;
-            $this->deleteCookies[$name] = $value;
-
-            return $this;
-        }
-
-        if (!isset($this->deleteCookies[$name]) || !$this->deleteCookies[$name] instanceof \Symfony\Config\Security\FirewallConfig\Logout\DeleteCookieConfig) {
+        if (!isset($this->deleteCookies[$name])) {
             $this->_usedProperties['deleteCookies'] = true;
             $this->deleteCookies[$name] = new \Symfony\Config\Security\FirewallConfig\Logout\DeleteCookieConfig($value);
         } elseif (1 < \func_num_args()) {

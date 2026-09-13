@@ -25,7 +25,7 @@ class TranslatorConfig
     private $_usedProperties = [];
 
     /**
-     * @default false
+     * @default true
      * @param ParamConfigurator|bool $value
      * @return $this
      */
@@ -117,22 +117,11 @@ class TranslatorConfig
     }
 
     /**
-     * @template TValue
-     * @param TValue $value
      * @default {"enabled":false,"accents":true,"expansion_factor":1,"brackets":true,"parse_html":false,"localizable_html_attributes":[]}
-     * @return \Symfony\Config\Framework\Translator\PseudoLocalizationConfig|$this
-     * @psalm-return (TValue is array ? \Symfony\Config\Framework\Translator\PseudoLocalizationConfig : static)
-     */
-    public function pseudoLocalization(array $value = []): \Symfony\Config\Framework\Translator\PseudoLocalizationConfig|static
+    */
+    public function pseudoLocalization(array $value = []): \Symfony\Config\Framework\Translator\PseudoLocalizationConfig
     {
-        if (!\is_array($value)) {
-            $this->_usedProperties['pseudoLocalization'] = true;
-            $this->pseudoLocalization = $value;
-
-            return $this;
-        }
-
-        if (!$this->pseudoLocalization instanceof \Symfony\Config\Framework\Translator\PseudoLocalizationConfig) {
+        if (null === $this->pseudoLocalization) {
             $this->_usedProperties['pseudoLocalization'] = true;
             $this->pseudoLocalization = new \Symfony\Config\Framework\Translator\PseudoLocalizationConfig($value);
         } elseif (0 < \func_num_args()) {

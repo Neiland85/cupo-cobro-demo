@@ -22,7 +22,7 @@ class MailerConfig
     private $_usedProperties = [];
 
     /**
-     * @default false
+     * @default true
      * @param ParamConfigurator|bool $value
      * @return $this
      */
@@ -88,7 +88,7 @@ class MailerConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @return \Symfony\Config\Framework\Mailer\HeaderConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\Mailer\HeaderConfig : static)

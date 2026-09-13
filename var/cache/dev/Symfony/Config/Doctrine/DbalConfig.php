@@ -33,7 +33,7 @@ class DbalConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of string|array
      * @param TValue $value
      * @return \Symfony\Config\Doctrine\Dbal\TypeConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Doctrine\Dbal\TypeConfig : static)
@@ -69,7 +69,7 @@ class DbalConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @return \Symfony\Config\Doctrine\Dbal\ConnectionConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Doctrine\Dbal\ConnectionConfig : static)

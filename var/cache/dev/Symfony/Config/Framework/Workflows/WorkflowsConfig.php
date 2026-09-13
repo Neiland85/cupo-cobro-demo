@@ -28,22 +28,11 @@ class WorkflowsConfig
     private $_usedProperties = [];
 
     /**
-     * @template TValue
-     * @param TValue $value
      * @default {"enabled":false}
-     * @return \Symfony\Config\Framework\Workflows\WorkflowsConfig\AuditTrailConfig|$this
-     * @psalm-return (TValue is array ? \Symfony\Config\Framework\Workflows\WorkflowsConfig\AuditTrailConfig : static)
-     */
-    public function auditTrail(array $value = []): \Symfony\Config\Framework\Workflows\WorkflowsConfig\AuditTrailConfig|static
+    */
+    public function auditTrail(array $value = []): \Symfony\Config\Framework\Workflows\WorkflowsConfig\AuditTrailConfig
     {
-        if (!\is_array($value)) {
-            $this->_usedProperties['auditTrail'] = true;
-            $this->auditTrail = $value;
-
-            return $this;
-        }
-
-        if (!$this->auditTrail instanceof \Symfony\Config\Framework\Workflows\WorkflowsConfig\AuditTrailConfig) {
+        if (null === $this->auditTrail) {
             $this->_usedProperties['auditTrail'] = true;
             $this->auditTrail = new \Symfony\Config\Framework\Workflows\WorkflowsConfig\AuditTrailConfig($value);
         } elseif (0 < \func_num_args()) {
@@ -135,7 +124,7 @@ class WorkflowsConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @return \Symfony\Config\Framework\Workflows\WorkflowsConfig\PlaceConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\Workflows\WorkflowsConfig\PlaceConfig : static)
@@ -153,7 +142,7 @@ class WorkflowsConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @return \Symfony\Config\Framework\Workflows\WorkflowsConfig\TransitionConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\Workflows\WorkflowsConfig\TransitionConfig : static)

@@ -116,9 +116,9 @@ class RouterConfig
 
     /**
      * set to true to throw an exception when a parameter does not match the requirements
-    set to false to disable exceptions when a parameter does not match the requirements (and return null instead)
-    set to null to disable parameter checks against requirements
-    'true' is the preferred configuration in development mode, while 'false' or 'null' might be preferred in production
+     * set to false to disable exceptions when a parameter does not match the requirements (and return null instead)
+     * set to null to disable parameter checks against requirements
+     * 'true' is the preferred configuration in development mode, while 'false' or 'null' might be preferred in production
      * @default true
      * @param ParamConfigurator|mixed $value
      * @return $this

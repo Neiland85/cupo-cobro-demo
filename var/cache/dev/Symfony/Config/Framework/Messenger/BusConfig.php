@@ -17,7 +17,7 @@ class BusConfig
     private $_usedProperties = [];
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @default {"enabled":true,"allow_no_handlers":false,"allow_no_senders":true}
      * @return \Symfony\Config\Framework\Messenger\BusConfig\DefaultMiddlewareConfig|$this
@@ -43,7 +43,7 @@ class BusConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @return \Symfony\Config\Framework\Messenger\BusConfig\MiddlewareConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\Messenger\BusConfig\MiddlewareConfig : static)

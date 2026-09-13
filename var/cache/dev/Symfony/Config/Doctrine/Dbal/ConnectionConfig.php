@@ -726,7 +726,7 @@ class ConnectionConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @deprecated The "slaves" configuration key will be renamed to "replicas" in doctrine-bundle 3.0. "slaves" is deprecated since doctrine-bundle 2.2.
      * @return \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig|$this
@@ -752,7 +752,7 @@ class ConnectionConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @return \Symfony\Config\Doctrine\Dbal\ConnectionConfig\ReplicaConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Doctrine\Dbal\ConnectionConfig\ReplicaConfig : static)

@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'nucleo:demo',
+    name: 'Nucleo:demo',
     description: 'Banco de ensayo fail-closed: refund|unknown|oversell|replay',
 )]
 final class NucleoDemoCommand extends Command

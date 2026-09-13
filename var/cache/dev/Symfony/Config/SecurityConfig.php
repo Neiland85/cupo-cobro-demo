@@ -97,7 +97,7 @@ class SecurityConfig implements \Symfony\Component\Config\Builder\ConfigBuilderI
     }
 
     /**
-     * @template TValue
+     * @template TValue of string|array
      * @param TValue $value
      * @example "auto"
      * @example {"algorithm":"auto","time_cost":8,"cost":13}

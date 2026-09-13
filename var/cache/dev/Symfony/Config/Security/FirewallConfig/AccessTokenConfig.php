@@ -100,7 +100,7 @@ class AccessTokenConfig
     }
 
     /**
-     * @template TValue
+     * @template TValue of mixed
      * @param TValue $value
      * @example "App\\Security\\CustomTokenHandler"
      * @return \Symfony\Config\Security\FirewallConfig\AccessToken\TokenHandlerConfig|$this
