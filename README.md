@@ -26,26 +26,30 @@ El segundo capture es un incidente a propósito: alguien saltó la capa de key.
 
 ## Cómo verlo
 
-git clone https://github.com/Neiland85/cupo-cobro-demo.git
-cd cupo-cobro-demo
-composer install
-php bin/console nucleo:demo replay
-textCriterio esperado (el que cuenta):
+    git clone https://github.com/Neiland85/cupo-cobro-demo.git
+    cd cupo-cobro-demo
+    composer install
+    php bin/console nucleo:demo replay
 
-PAY_OK captures=1
-DUPLICATE_CAPTURE_SAME_KEY captures=2 nogo=YES
+Criterio esperado (el que cuenta):
 
-[OK] una key, un asiento, segundo acto = NO-GO
-textPHP 8.5 + Symfony 7.1 pueden soltar un muro de `Deprecated: SplObjectStorage`
+    1. PAY_OK captures=1
+    2. DUPLICATE_CAPTURE_SAME_KEY captures=2 nogo=YES
+
+    [OK] una key, un asiento, segundo acto = NO-GO
+
+PHP 8.5 + Symfony 7.1 pueden soltar un muro de `Deprecated: SplObjectStorage`
 y un aviso de `debug.xml` en el `post-install`.
 Eso no es el ensayo. El criterio es el bloque `[OK]`.
 
 App web (catálogo / reservas / admin):
-.env.local → DATABASE_URL
-php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
-symfony server:start
-text## Dónde está el mecanismo
+
+    # .env.local → DATABASE_URL
+    php bin/console doctrine:database:create
+    php bin/console doctrine:migrations:migrate
+    symfony server:start
+
+## Dónde está el mecanismo
 
 | Pieza | Sitio |
 | --- | --- |
